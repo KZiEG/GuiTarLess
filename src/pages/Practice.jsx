@@ -271,7 +271,11 @@ function PromptHead({ card }) {
         <div className="prompt-symbol">{card.symbol}</div>
       )}
       <div className="prompt-formula">
-        <Formula semis={card.chord.semis} changed={card.kind === 'change' ? card.added : card.kind === 'target' ? [card.target] : []} />
+        <Formula
+          semis={card.chord.semis}
+          notes={card.notes}
+          changed={card.kind === 'change' ? card.added : card.kind === 'target' ? [card.target] : []}
+        />
       </div>
       <div className="prompt-instruction">{card.instruction}</div>
       <div className="prompt-where">
