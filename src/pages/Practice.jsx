@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Fretboard from '../components/Fretboard.jsx';
+import IntervalRuler from '../components/IntervalRuler.jsx';
 import { Chips, KeyPicker, Section, Formula, Segmented, Callout, Pill } from '../components/ui.jsx';
-import { INTERVALS, PRACTICE_CHORDS, chordPositions, intervalClass, spellInterval, midiAt, mod12, pcAt } from '../theory.js';
+import { INTERVALS, KEYS, PRACTICE_CHORDS, chordById, spellChord, chordSymbol, chordPositions, intervalClass, spellInterval, midiAt, mod12, pcAt } from '../theory.js';
 import { AREAS, STRING_SETS, MODES, DEFAULT_SETTINGS, canRun, createSession } from '../practice.js';
 import { changeText } from './Chords.jsx';
 import { arpeggio, strum, unlockAudio } from '../audio.js';
@@ -45,6 +46,7 @@ export default function Practice({ onLearn }) {
 
       <Section title="Root (key)">
         <KeyPicker value={settings.root} onChange={(root) => set({ root })} withRandom />
+        <KeyOverview settings={settings} />
       </Section>
 
       <Section title="Chords to focus on">
@@ -110,6 +112,42 @@ export default function Practice({ onLearn }) {
         </button>
       </div>
     </div>
+  );
+}
+
+// Root-to-octave ruler for the chosen key, plus the chosen chords spelled out.
+function KeyOverview({ settings }) {
+  const random = settings.root === 'random';
+  const rootPc = random ? 0 : settings.root;
+  const rootName = KEYS[rootPc].name;
+  const chords = settings.chords.map(chordById).filter(Boolean);
+  const lit = [...new Set(chords.flatMap((c) => c.semis))];
+  return (
+    <>
+      <IntervalRuler
+        rootName={rootName}
+        highlight={chords.length ? lit : undefined}
+        caption={
+          random
+            ? 'Random root: shown here with C as an example. The intervals are the same in every key; only the note names change.'
+            : `${rootName} to ${rootName}, one column per semitone (one fret). Lit columns are the notes used by the chords you picked.`
+        }
+      />
+      {chords.length > 0 && (
+        <div className="key-chords">
+          {chords.map((c) => {
+            const sp = spellChord(rootPc, c);
+            return (
+              <div key={c.id} className="key-chord">
+                <span className="key-chord-sym">{chordSymbol(sp.rootName, c)}</span>
+                <Formula semis={c.semis} />
+                <span className="key-chord-notes">{sp.notes.join(' ')}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
   );
 }
 

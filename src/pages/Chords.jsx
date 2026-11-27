@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Fretboard from '../components/Fretboard.jsx';
+import IntervalRuler from '../components/IntervalRuler.jsx';
 import { Chips, KeyPicker, Section, Callout, Formula, Segmented, Pill } from '../components/ui.jsx';
 import {
-  INTERVALS, MAX_FRET, chordById, chordPositions, intervalClass, spellChord, chordSymbol,
+  INTERVALS, KEYS, MAX_FRET, chordById, chordPositions, intervalClass, spellChord, chordSymbol,
   identifyChord, midiAt, mod12, pcAt, spellInterval,
 } from '../theory.js';
 import { arpeggio, strum } from '../audio.js';
@@ -142,6 +143,12 @@ export default function Chords({ focus }) {
       <Section>
         <div className="label">Root</div>
         <KeyPicker value={rootPc} onChange={setRootPc} />
+        <IntervalRuler
+          rootName={rootName}
+          highlight={chord.semis}
+          changed={isBuild ? [] : added}
+          caption={`${rootName} to ${rootName}, one column per semitone (one fret). Lit columns are the notes of ${symbol}. Tap a column to hear it with the root.`}
+        />
 
         <div className="steps">
           {STEPS.map((s, i) => (
@@ -158,6 +165,11 @@ export default function Chords({ focus }) {
               <div className="kicker">Step {step + 1} · {st.title}</div>
               <div className="chord-symbol">{symbol}</div>
               <div className="muted">{named ? `${rootName} ${named.name.toLowerCase()}` : 'Not one of the chords in this lesson'}</div>
+              {named && rootName !== KEYS[rootPc].name && (
+                <div className="respell">
+                  Same notes as {KEYS[rootPc].name}{named.suffix}, but usually written {symbol} because it reads more easily.
+                </div>
+              )}
             </div>
             <button className="btn icon big" onClick={play} aria-label="Play chord">▶</button>
           </div>
