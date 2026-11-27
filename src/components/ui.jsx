@@ -52,13 +52,14 @@ export function Pill({ semis, changed, ghost, children }) {
   );
 }
 
-export function Formula({ semis, changed = [], showSemis = false }) {
+export function Formula({ semis, changed = [], showSemis = false, notes }) {
   return (
     <div className="formula">
-      {semis.map((n) => (
+      {semis.map((n, i) => (
         <div key={n} className="formula-item">
           <Pill semis={n} changed={changed.includes(n)} />
           {showSemis && <span className="formula-semis">{n}</span>}
+          {notes && <span className="formula-note">{notes[i]}</span>}
         </div>
       ))}
     </div>
