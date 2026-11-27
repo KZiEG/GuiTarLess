@@ -141,7 +141,6 @@ export default function Chords({ focus }) {
       </header>
 
       <Section>
-        <div className="label">Root</div>
         <KeyPicker value={rootPc} onChange={setRootPc} />
         <IntervalRuler
           rootName={rootName}

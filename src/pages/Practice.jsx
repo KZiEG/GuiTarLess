@@ -44,8 +44,8 @@ export default function Practice({ onLearn }) {
         </p>
       </header>
 
-      <Section title="Root (key)">
-        <KeyPicker value={settings.root} onChange={(root) => set({ root })} withRandom />
+      <Section title="Key">
+        <KeyPicker label="Root" value={settings.root} onChange={(root) => set({ root })} withRandom />
         <KeyOverview settings={settings} />
       </Section>
 

@@ -24,10 +24,24 @@ export function Chips({ options, value, onChange, multi = false, small = false }
   );
 }
 
-export function KeyPicker({ value, onChange, withRandom = false }) {
-  const opts = KEYS.map((k) => ({ value: k.pc, label: k.name }));
-  if (withRandom) opts.push({ value: 'random', label: 'Random' });
-  return <Chips options={opts} value={value} onChange={onChange} small />;
+export function KeyPicker({ value, onChange, withRandom = false, label = 'Root (key)' }) {
+  return (
+    <label className="select-wrap">
+      <span className="select-label">{label}</span>
+      <select
+        className="select"
+        value={String(value)}
+        onChange={(e) => onChange(e.target.value === 'random' ? 'random' : Number(e.target.value))}
+      >
+        {KEYS.map((k) => (
+          <option key={k.pc} value={k.pc}>
+            {k.name}
+          </option>
+        ))}
+        {withRandom && <option value="random">Random (changes every card)</option>}
+      </select>
+    </label>
+  );
 }
 
 export function Pill({ semis, changed, ghost, children }) {
